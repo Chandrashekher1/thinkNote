@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/Button";
-import {  GridBackground } from "@/lightwind/Components/grid-&-dot-background";
+import { GridBackground } from "@/lightwind/Components/grid-&-dot-background";
 import {  ArrowUpRight, PlayCircleIcon } from "lucide-react";
 import {
   DropdownMenu,
@@ -17,6 +17,7 @@ import { easeOut, motion } from "motion/react"
 export function Home() {
     const { setTheme } = useTheme()
     const navigate = useNavigate()
+    const {theme} = useTheme()
 
     const fadeInUp = {
         hidden: {opacity:0, y:60},
@@ -31,9 +32,9 @@ export function Home() {
                 whileInView="visible"
                 viewport={{once:true}}
             >
-            <div className="w-[50vw] text-center">
-            <ShinyText size="4xl" weight='bold' direction='left-to-right' baseColor="white" shineColor='gray'> <h1 className="text-6xl " >Your Second Brain for the Web</h1></ShinyText>
-            <p className="text-2xl text-center my-8">Capture, organize, and share notes, videos, tweets, and links in one beautiful place.</p>
+            <div className="md:w-[50vw] text-center">
+            <ShinyText size="4xl" weight='bold' direction='left-to-right' baseColor={theme === 'dark'? 'white':'black'} shineColor={theme === 'dark' ? 'gray':'black'}> <h1 className="md:text-6xl text-4xl mx-4 md:mx-0 " >Your Digital Brain for Everything Online</h1></ShinyText>
+            <p className="md:text-2xl text-xl mx-4 text-center my-8">Effortlessly save, manage, and share your notes, videos, tweets, and links—all in one sleek, unified space.</p>
             <div className="flex justify-center">
                 <Button variant="default" className="text-lg mx-4" onClick={() => navigate('/signup') }>Get Started <ArrowUpRight/></Button>
                 <Button variant="outline" size="lg" className="text-lg" onClick={() => navigate('/login')}><PlayCircleIcon/> Login </Button>
