@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/Button";
-import { GridBackground } from "@/lightwind/Components/grid-&-dot-background";
+import { GridBackground } from "@/lightwind/Components/dotAndGrid";
 import {  ArrowUpRight, PlayCircleIcon } from "lucide-react";
 import {
   DropdownMenu,
