@@ -4,6 +4,8 @@ import { Card, CardContent } from "@/components/ui/Card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { easeOut, motion } from "motion/react"
+import { useNavigate } from "react-router-dom"
+import { useRef } from "react"
 
 export function SignForm({
   className,
@@ -14,6 +16,46 @@ export function SignForm({
       hidden: {opacity:0, x:60},
       visible: {opacity:1, x:0, transition:{duration: 0.6,ease: easeOut}}
   }
+
+  const navigate = useNavigate();
+  const userRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const username = userRef.current?.value;
+    const password = passwordRef.current?.value;
+
+    if (!username || !password) {
+      alert("Please enter both email and password.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:3000/api/v1/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({username, password }),
+      });
+
+      const data = await response.json();
+      console.log(data);
+      
+      if (data.success || data.token) {
+        localStorage.setItem("token", data.token);
+        alert("Login successful!");
+        navigate("/dashboard");
+      } else {
+        alert(data.message || "Login failed, please try again.");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Something went wrong. Please try again later.");
+    }
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -38,7 +80,7 @@ export function SignForm({
                 whileInView="visible"
                 viewport={{once:true}}
           >
-            <form className="p-6 md:p-8">
+            <form className="p-6 md:p-8" onSubmit={handleSignUp}>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Welcome back</h1>
@@ -52,11 +94,12 @@ export function SignForm({
                 whileInView="visible"
                 viewport={{once:true}}
               className="grid gap-3">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="username">username</Label>
                 <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
+                  id="username"
+                  type="username"
+                  placeholder="username"
+                  ref={userRef}
                   required
                 />
               </motion.div>
@@ -75,7 +118,13 @@ export function SignForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" placeholder="user@123" required />
+                <Input 
+                  id="password"
+                  type="password" 
+                  placeholder="user@123" 
+                  ref={passwordRef}
+                  required 
+                />
               </motion.div>
               <Button type="submit" className="w-full">
                 Sign Up
