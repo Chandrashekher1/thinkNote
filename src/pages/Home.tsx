@@ -28,7 +28,7 @@ export function Home() {
         if (localStorage.getItem('token')) {
             navigate('/dashboard');
         } else {
-            navigate('/login');
+            navigate('/signup');
         }
     }
 
