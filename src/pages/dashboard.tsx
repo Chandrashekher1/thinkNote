@@ -6,7 +6,7 @@
     CardContent,
     CardFooter,
     CardHeader,
-    CardTitle,
+    
   } from '../components/ui/Card';
   import { useContent } from '@/Hook/useContent';
   import {
@@ -21,16 +21,13 @@
     DockIcon,
     EditIcon,
     EyeIcon,
-    Link,
     LinkIcon,
     Moon,
     PlusIcon,
-    ShareIcon,
     Sun,
     TagIcon,
     Trash
   } from "lucide-react";
-  import { Input } from '@/components/ui/input';
   import { YoutubeIcons } from '@/icons/YoutubeIcons';
   import { TwitterIcon } from '@/icons/TwitterIcon';
   import { useNavigate } from 'react-router-dom';
@@ -51,6 +48,14 @@ import {
 } from "../components/ui/alert-dialog";
 import { ShareBrainDialog } from '@/components/ui/ShareBrain';
 import { Skeleton } from "@/components/ui/skeleton"
+import { Input } from '@/components/ui/Input';
+
+interface Note {
+  title?: string;
+  content?: string;
+  link?: string;
+}
+
 
 function Dashboard() {
     const fetchContent = useContent() || [];
@@ -154,13 +159,14 @@ function Dashboard() {
             </div>
           ) :  (
             <motion.div variants={fadeInUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className='mx-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 my-8'>
-              {fetchContent.filter(({ link, title, content }) => {
+              {fetchContent.filter((note: Note) => {
                 const query = searchQuery.toLowerCase();
-                return (
-                  title?.toLowerCase().includes(query) ||
-                  content?.toLowerCase().includes(query) ||
-                  link?.toLowerCase().includes(query)
-                );
+               return (
+              (note ?? "").toLowerCase().includes(query.toLowerCase()) ||
+              (note ?? "").toLowerCase().includes(query.toLowerCase()) ||
+              (note ?? "").toLowerCase().includes(query.toLowerCase())
+            );
+
               }).map(({ link, title, type, content , _id}, index) => (
                 <Card key={index} className="md:w-[30vw]  bg-white dark:bg-primary-foreground border border-border rounded-2xl shadow-md transition-colors hover:-translate-y-1 hover:duration-300">
                   <CardHeader className="flex items-start justify-between gap-2">
