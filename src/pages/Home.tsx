@@ -24,6 +24,14 @@ export function Home() {
         visible: {opacity:1, y:0, transition:{duration: 0.6,ease: easeOut}}
     }
 
+    const handleStarted =() => {
+        if (localStorage.getItem('token')) {
+            navigate('/dashboard');
+        } else {
+            navigate('/login');
+        }
+    }
+
     return (
         <GridBackground>
             <motion.div 
@@ -36,7 +44,7 @@ export function Home() {
             <ShinyText size="4xl" weight='bold' direction='left-to-right' baseColor={theme === 'dark'? 'white':'black'} shineColor={theme === 'dark' ? 'gray':'black'}> <h1 className="md:text-6xl text-4xl mx-4 md:mx-0 " >Your Digital Brain for Everything Online</h1></ShinyText>
             <p className="md:text-2xl text-xl mx-4 text-center my-8">Effortlessly save, manage, and share your notes, videos, tweets, and links—all in one sleek, unified space.</p>
             <div className="flex justify-center">
-                <Button variant="default" className="text-lg mx-4" onClick={() => navigate('/signup') }>Get Started <ArrowUpRight/></Button>
+                <Button variant="default" className="text-lg mx-4" onClick={handleStarted }>Get Started <ArrowUpRight/></Button>
                 <Button variant="outline" size="lg" className="text-lg" onClick={() => navigate('/login')}><PlayCircleIcon/> Login </Button>
                 <div className="mx-4">
                     <DropdownMenu>
