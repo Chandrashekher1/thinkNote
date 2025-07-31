@@ -1,12 +1,13 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
-import { Input } from "../ui/input";
-import { Label } from "@/components/ui/label";
+// import { Input } from "./input";
+import { Label } from "../ui/label";
 import { motion, easeOut } from "framer-motion";
 import { BACKEND_URL } from "@/config";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { Input } from "./input";
 
 export function LoginForm({
   className,
