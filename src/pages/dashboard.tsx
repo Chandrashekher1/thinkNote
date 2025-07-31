@@ -104,7 +104,7 @@ function Dashboard() {
       }
     }
 
-    if(!fetchContent || fetchContent.length === 0) {  
+    if(!fetchContent) {  
       return(
         <div className='flex flex-wrap items-center justify-center min-h-screen bg-white dark:bg-black px-4 py-8'>
             <Skeleton className="h-[30vh] w-[30vw] rounded-lg mx-4 my-4" />
