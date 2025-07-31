@@ -6,14 +6,13 @@ export function useContent() {
 
     useEffect(() => {
         const fetchContent = async () => {
-            const response = await fetch(BACKEND_URL + '/api/v1/content',{
+            const response = await fetch(`${BACKEND_URL}/api/v1/content`,{
                 method:'GET',
                 headers: {
                     'Authorization': `${localStorage.getItem('token')}`
                 }
             })
             const json = await response.json()
-            console.log(json);
             setContents(json?.content)
         }
         fetchContent()
