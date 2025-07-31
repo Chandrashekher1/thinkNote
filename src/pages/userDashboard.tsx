@@ -22,7 +22,6 @@ export default function UserDashboard() {
   
   const [data, setData] = useState(null as BrainData | null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
   useEffect(() => {
     if (!shareLink) return;
@@ -36,8 +35,8 @@ export default function UserDashboard() {
         console.log(json);
         
         setData(json);
-      } catch (err: any) {
-        setError(err.message || "Failed to fetch data");
+      } catch (error) {
+        console.error(error||"Failed to fetch data");
       } finally {
         setLoading(false);
       }
