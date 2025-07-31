@@ -7,7 +7,7 @@ import { motion, easeOut } from "framer-motion";
 import { BACKEND_URL } from "@/config";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Input } from "./input";
+import { Input } from "./Input";
 
 export function LoginForm({
   className,
