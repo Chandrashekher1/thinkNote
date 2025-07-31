@@ -1,11 +1,11 @@
 import React, { useRef, useState } from 'react';
 import { Button } from './Button';
-import { Input } from './input';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { DockIcon, Link, PlusIcon } from 'lucide-react';
 import { YoutubeIcons } from '@/icons/YoutubeIcons';
 import { TwitterIcon } from '@/icons/TwitterIcon';
 import { BACKEND_URL } from '@/config';
+import { Input } from './input';
 
 interface Props {
   token: string;
