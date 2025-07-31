@@ -27,7 +27,7 @@ export function ShareBrainDialog({ token }: ShareBrainDialogProps) {
 
   const handleShareToggle = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/api/v1/brain/share`, {
+      const res = await fetch(`${BACKEND_URL}/api/v1/brain/share`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
