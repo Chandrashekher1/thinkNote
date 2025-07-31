@@ -5,7 +5,7 @@ import { DockIcon, Link, PlusIcon } from 'lucide-react';
 import { YoutubeIcons } from '@/icons/YoutubeIcons';
 import { TwitterIcon } from '@/icons/TwitterIcon';
 import { BACKEND_URL } from '@/config';
-import { Input } from './input';
+import { Input } from './Input';
 
 interface Props {
   token: string;
