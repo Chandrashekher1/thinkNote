@@ -51,14 +51,16 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Input } from '@/components/ui/Input';
 
 interface Note {
+  _id: string;
   title?: string;
   content?: string;
   link?: string;
+  type?: string;
 }
 
 
 function Dashboard() {
-    const fetchContent = useContent() || [];
+    const fetchContent = (useContent() || []) as Note[];
     const { setTheme } = useTheme();
     const navigate = useNavigate();
     const token = localStorage.getItem('token') || '';
@@ -159,14 +161,13 @@ function Dashboard() {
             </div>
           ) :  (
             <motion.div variants={fadeInUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className='mx-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 my-8'>
-              {fetchContent.filter((note: Note) => {
+              {fetchContent.filter(({title, type,content}) => {
                 const query = searchQuery.toLowerCase();
                return (
-              (note ?? "").toLowerCase().includes(query.toLowerCase()) ||
-              (note ?? "").toLowerCase().includes(query.toLowerCase()) ||
-              (note ?? "").toLowerCase().includes(query.toLowerCase())
-            );
-
+                  (title?.toLowerCase().includes(query) ?? false) ||
+                  (content?.toLowerCase().includes(query) ?? false) ||
+                  (type?.toLowerCase().includes(query) ?? false)
+                );
               }).map(({ link, title, type, content , _id}, index) => (
                 <Card key={index} className="md:w-[30vw]  bg-white dark:bg-primary-foreground border border-border rounded-2xl shadow-md transition-colors hover:-translate-y-1 hover:duration-300">
                   <CardHeader className="flex items-start justify-between gap-2">
