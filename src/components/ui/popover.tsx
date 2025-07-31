@@ -43,32 +43,30 @@ const Popover: React.FC<PopoverProps> = ({
   );
 
   // Close popover when clicking outside
-  React.useEffect(() => {
-    if (!open) return;
+ React.useEffect(() => {
+  if (!open) return;
 
-    const handleClickOutside = (event: MouseEvent) => {
-      // Check if the click is outside any popover content
-      const popoverContents = document.querySelectorAll(
-        "[data-popover-content]"
-      );
-      let isClickInside = false;
+  const handleClickOutside = (event: MouseEvent) => {
+    const popoverContents = document.querySelectorAll("[data-popover-content]");
+    let isClickInside = false;
 
-      popoverContents.forEach((content) => {
-        if (content.contains(event.target as Node)) {
-          isClickInside = true;
-        }
-      });
-
-      if (!isClickInside) {
-        setOpen(false);
+    popoverContents.forEach((content) => {
+      if (content.contains(event.target as Node)) {
+        isClickInside = true;
       }
-    };
+    });
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [open, setOpen]);
+    if (!isClickInside) {
+      setOpen(false);
+    }
+  };
+
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, [open, setOpen]);
+
 
   // Hide/show body scrollbar based on popover open state
   React.useEffect(() => {
@@ -119,10 +117,10 @@ const PopoverTrigger: React.FC<PopoverTriggerProps> = ({
       <>
         {React.Children.map(children, (child) => {
             if (React.isValidElement(child)) {
-            const element = child as React.ReactElement<any>; // 👈 Explicitly type as ReactElement
+            const element = child as React.ReactElement<any>;
             const childProps = {
-              ...element.props, // ✅ now this is no longer "unknown"
-              onClick: (e: React.MouseEvent) => {
+              ...element.props, 
+              onClick: (e: React.MouseEvent<HTMLElement>) => {
                 handleClick(e);
                 if (element.props.onClick) element.props.onClick(e);
               },
@@ -149,7 +147,7 @@ interface PopoverContentProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const PopoverContent = React.forwardRef<HTMLDivElement, PopoverContentProps>(
-  ({ className, align = "center", sideOffset = 4, ...props }, ref) => {
+  ({ className, ...props }, ref) => {
     const context = React.useContext(PopoverContext);
     if (!context) {
       throw new Error("PopoverContent must be used within a Popover");
