@@ -1,3 +1,73 @@
+## ThinkNote
+
+# **ThinkNote** is a web Application. It allows users to save, manage, share and preview different types of content like documents, YouTube videos, Tweets, and external links in a beautifully designed interface.
+
+##  Features
+
+-  **JWT Authentication** (Login & Signup)
+-  **Add & Manage Notes**
+  - Document, YouTube, Twitter, Link
+-  **Search Functionality**
+-  **Tag Filtering** (future support)
+-  **Content Deletion with Confirmation**
+-  **Real-time UI Update**
+-  **Light/Dark Mode Toggle**
+-  **Content Sharing via Hash Link**
+-  **Responsive UI with Theme Customization**
+-  **Auto-dismissing Toast Alerts**
+-  **MERN Stack with RESTful API**
+
+---
+
+# Screenshots
+<img width="1905" height="885" alt="image" src="https://github.com/user-attachments/assets/babeba08-c8b7-40bc-9643-1b0aba02a213" />
+<img width="1866" height="876" alt="image" src="https://github.com/user-attachments/assets/2c7f8ee0-9ba7-4a39-987b-245ef6136016" />
+<img width="995" height="831" alt="image" src="https://github.com/user-attachments/assets/fe475b4e-d285-498d-9bea-0e30f4dc67ce" />
+<img width="1894" height="781" alt="image" src="https://github.com/user-attachments/assets/fd61f939-8bd1-4234-9210-e336d7b1c70a" />
+
+
+## 🛠️ Tech Stack
+
+**Frontend:**
+- React
+- TypeScript
+- Tailwind CSS
+- ShadCN/UI Components
+- Lucide Icons
+- Framer Motion
+---
+
+## 📁 Folder Structure
+
+```
+thinkNote/
+├── src/
+│ ├── components/
+│ ├── pages/
+│ ├── hooks/
+│ ├── icons/
+│ ├── config/
+│ └── App.tsx
+├── public/
+├── .env
+└── README.md
+```
+
+## Getting Started
+```
+git clone https://github.com/your-username/thinkNote.git
+cd thinkNote
+npm install
+npm run dev
+
+```
+
+# Author
+
+Made with ❤ by Chandrashekher
+
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
