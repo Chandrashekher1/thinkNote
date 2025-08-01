@@ -61,11 +61,10 @@ interface Note {
 
 
 function Dashboard() {
-    const fetchContent = (useContent() || []) as Note[];
+    const {contents,loading} = (useContent() || [] as Note[]);
     const { setTheme } = useTheme();
     const navigate = useNavigate();
     const token = localStorage.getItem('token') || '';
-  
     const [searchQuery, setSearchQuery] = React.useState('');
     const [isAlertOpen, setIsAlertOpen] = React.useState(false);
       const [alertTitle, setAlertTitle] = React.useState('');
@@ -120,7 +119,7 @@ function Dashboard() {
 
     }
 
-    if(!fetchContent) {  
+    if(loading) {  
       return(
         <div className='flex flex-wrap items-center justify-center min-h-screen bg-white dark:bg-black px-4 py-8'>
             <Skeleton className="h-[30vh] w-[30vw] rounded-lg mx-4 my-4" />
@@ -169,16 +168,16 @@ function Dashboard() {
         </div>
 
         <DotBackground>
-          {fetchContent.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-[60vh] text-center my-8">
+          {contents.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-[60vh] text-center my-8 bg-muted rounded-lg p-6">
               <PlusIcon className="w-8 h-8 mb-4" />
               <h2 className="text-xl font-semibold">No content found</h2>
               <p className="text-muted-foreground mb-4">Add your first note, link, or content</p>
-              <div className='text-start'><AddContentPopover token={token} /></div>
+              <div className='text-start bg-secondary border rounded-lg'><AddContentPopover token={token} /></div>
             </div>
           ) :  (
             <motion.div variants={fadeInUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className='mx-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 my-8'>
-              {fetchContent.filter(({title, type,content}) => {
+              {contents.filter(({title, type,content}) => {
                 const query = searchQuery.toLowerCase();
                return (
                   (title?.toLowerCase().includes(query) ?? false) ||
@@ -186,7 +185,7 @@ function Dashboard() {
                   (type?.toLowerCase().includes(query) ?? false)
                 );
               }).map(({ link, title, type, content , _id}, index) => (
-                <Card key={index} className="md:w-[30vw]  bg-white dark:bg-primary-foreground border border-border rounded-2xl shadow-md transition-colors hover:-translate-y-1 hover:duration-300">
+                <Card key={index} className="md:w-[30vw] w-[80vw] bg-white dark:bg-primary-foreground border border-border rounded-2xl shadow-md transition-colors hover:-translate-y-1 hover:duration-300">
                   <CardHeader className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2 text-xl font-semibold text-foreground">
                       {type === 'youtube' && <YoutubeIcons />} {type === 'twitter' && <TwitterIcon />} {type === 'document' && <DockIcon />} {type === 'link' && <LinkIcon />} {title}
