@@ -68,20 +68,20 @@ function Dashboard() {
   
     const [searchQuery, setSearchQuery] = React.useState('');
     const [isAlertOpen, setIsAlertOpen] = React.useState(false);
-    const [alertTitle, setAlertTitle] = React.useState('');
-    const [alertDescription, setAlertDescription] = React.useState('');
-    const [alertType, setAlertType] = React.useState<"success" | "error" | "info">("info");
+      const [alertTitle, setAlertTitle] = React.useState('');
+      const [alertDescription, setAlertDescription] = React.useState('');
+      const [alertVariant, setAlertVariant] = React.useState<"default" | "success" | "error">("default");
 
     const triggerAlert = (
-      title: string,
-      description: string,
-      type: "success" | "error" | "info" = "info"
-    ) => {
-      setAlertTitle(title);
-      setAlertDescription(description);
-      setAlertType(type);
-      setIsAlertOpen(true);
-    };
+    title: string,
+    description: string,
+    variant: "default" | "success" | "error" = "default"
+  ) => {
+    setAlertTitle(title);
+    setAlertDescription(description);
+    setAlertVariant(variant);
+    setIsAlertOpen(true);
+  };
 
     const fadeInUp = {
       hidden: { opacity: 0, y: 60 },
@@ -106,7 +106,8 @@ function Dashboard() {
 
         const data = await response.json();
         if (data.message) {
-          triggerAlert("Deleted", data.message, "success");
+        triggerAlert('Deleted', "Content deleted successfully!", "success");
+
           setTimeout(() => window.location.reload(), 1000);
         } else {
           triggerAlert("Delete Failed", "Failed to delete content.", "error");
@@ -235,6 +236,7 @@ function Dashboard() {
       description={alertDescription}
       isOpen={isAlertOpen}
       setIsOpen={setIsAlertOpen}
+      variant={alertVariant}
     />
       </>
 
