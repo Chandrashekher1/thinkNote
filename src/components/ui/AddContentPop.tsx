@@ -7,6 +7,7 @@ import { TwitterIcon } from '@/icons/TwitterIcon';
 import { BACKEND_URL } from '@/config';
 import { Input } from './Input';
 import { AlertPopup } from './AlertPopup';
+import { useContent } from '@/Hook/useContent';
 
 interface Props {
   token: string;
@@ -21,6 +22,7 @@ export const AddContentPopover: React.FC<Props> = ({ token }) => {
   const [alertTitle, setAlertTitle] = useState('');
   const [alertDescription, setAlertDescription] = useState('');
   const [alertVariant, setAlertVariant] = useState<"default" | "success" | "error">("default");
+  const {fetchContent} = useContent();
 
   const titleRef = useRef<HTMLInputElement>(null);
   const linkRef = useRef<HTMLInputElement>(null);
@@ -72,9 +74,9 @@ export const AddContentPopover: React.FC<Props> = ({ token }) => {
 
       const data = await response.json();
       if (data.message) {
+        fetchContent()
         triggerAlert('Success', "Content added successfully!", "success");
-        window.location.reload()
-        triggerAlert('Failed', 'Failed to add content. Please try again.', "error");
+        window.location.href = '/dashboard';
       }
     } catch (e: any) {
       triggerAlert('Error', e.message || "Something went wrong.", "error");
