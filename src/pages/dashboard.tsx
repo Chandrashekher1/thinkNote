@@ -233,7 +233,6 @@ function Dashboard() {
       <AlertPopup
       title={alertTitle}
       description={alertDescription}
-      type={alertType}
       isOpen={isAlertOpen}
       setIsOpen={setIsAlertOpen}
     />
