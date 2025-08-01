@@ -2,7 +2,7 @@ import { GithubIcon, LinkedinIcon, XIcon } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="dark:bg-default bg-secondary-foreground dar:text-white  text-secondary py-8">
+    <footer className="dark:bg-secondary bg-secondary-foreground dark:text-white  text-secondary py-8">
       <div className="container mx-auto text-center">
         <p className="text-sm">© {new Date().getFullYear()} <span className="font-bold">Chandrashekher</span>. All rights reserved.</p>
         <div className="flex justify-center space-x-4 mt-4">
