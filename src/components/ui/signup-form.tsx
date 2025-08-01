@@ -68,7 +68,7 @@ export function SignForm({
     } catch (error) {
       console.error("Login error:", error);
       setAlertTitle("Internal Error");
-      setAlertDescription(error.message || "Something went wrong.");
+      setAlertDescription(error instanceof Error ? error.message : "An unexpected error occurred.");
       setAlertVariant("error");
       setAlertOpen(true);
     }
