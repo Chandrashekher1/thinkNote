@@ -1,6 +1,6 @@
 ## ThinkNote
 
-# **ThinkNote** is a web Application. It allows users to save, manage, share and preview different types of content like documents, YouTube videos, Tweets, and external links in a beautifully designed interface.
+**ThinkNote** is a web Application. It allows users to save, manage, share and preview different types of content like documents, YouTube videos, Tweets, and external links in a beautifully designed interface.
 
 ##  Features
 
