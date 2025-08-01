@@ -4,9 +4,10 @@ import { Card, CardContent } from "@/components/ui/Card"
 import { Label } from "../ui/label"
 import { easeOut, motion } from "motion/react"
 import { useNavigate } from "react-router-dom"
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import { BACKEND_URL } from "@/config"
 import { Input } from "./Input"
+import { AlertPopup } from "./AlertPopup"
 
 export function SignForm({
   className,
@@ -21,6 +22,11 @@ export function SignForm({
   const navigate = useNavigate();
   const userRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertTitle, setAlertTitle] = useState("");
+  const [alertDescription, setAlertDescription] = useState("");
+  const [alertVariant, setAlertVariant] = useState<"default" | "success" | "error">("default");
+
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,21 +49,34 @@ export function SignForm({
       });
 
       const data = await response.json();
-      if (data.success || data.token) {
-        localStorage.setItem("token", data.token);
-        alert("Login successful!");
-        navigate("/dashboard");
-      } else {
-        alert(data.message || "Login failed, please try again.");
-      }
+      console.log(data);
+      
+      if (data.success) {
+      setAlertTitle("Success");
+      setAlertDescription("Signup successful! Redirecting to login...");
+      setAlertVariant("success");
+      setAlertOpen(true);
+
+      setTimeout(() => navigate("/login"), 3000);
+    } else {
+      setAlertTitle("Signup Failed");
+      setAlertDescription(data.message || "Something went wrong.");
+      setAlertVariant("error");
+      setAlertOpen(true);
+    }
+
     } catch (error) {
       console.error("Login error:", error);
-      alert("Something went wrong. Please try again later.");
+      setAlertTitle("Internal Error");
+      setAlertDescription(error.message || "Something went wrong.");
+      setAlertVariant("error");
+      setAlertOpen(true);
     }
   };
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <>
+        <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
           
@@ -158,5 +177,14 @@ export function SignForm({
       </Card>
       
     </div>
+    <AlertPopup
+      title={alertTitle}
+      description={alertDescription}
+      isOpen={alertOpen}
+      setIsOpen={setAlertOpen}
+      variant={alertVariant}
+    />
+    </>
+
   )
 }
