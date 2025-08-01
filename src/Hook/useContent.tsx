@@ -2,29 +2,25 @@ import { BACKEND_URL } from "@/config";
 import { useEffect, useState } from "react";
 
 export function useContent() {
-    const [contents , setContents] = useState([])
+  const [contents, setContents] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        const fetchContent = async () => {
-            const response = await fetch(`${BACKEND_URL}/api/v1/content`,{
-                method:'GET',
-                headers: {
-                    'Authorization': `${localStorage.getItem('token')}`
-                }
-            })
-            const json = await response.json()
-            setContents(json?.content)
-        }
-        fetchContent()
+  const fetchContent = async () => {
+    setLoading(true);
+    const response = await fetch(`${BACKEND_URL}/api/v1/content`, {
+      method: "GET",
+      headers: {
+        Authorization: `${localStorage.getItem("token")}`,
+      },
+    });
+    const json = await response.json();
+    setContents(json?.content || []);
+    setLoading(false);
+  };
 
-        const interval = setInterval(() => {
-            fetchContent()
-        } , 10000)
+  useEffect(() => {
+    fetchContent();
+  }, []);
 
-        return () => {
-            clearInterval(interval)
-        }
-    },[])
-
-    return contents
+  return { contents, loading, fetchContent };
 }
