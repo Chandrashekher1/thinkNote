@@ -49,6 +49,7 @@ import {
 import { ShareBrainDialog } from '@/components/ui/ShareBrain';
 import { Skeleton } from "@/components/ui/skeleton"
 import { Input } from '@/components/ui/Input';
+import { AlertPopup } from '@/components/ui/AlertPopup';
 
 interface Note {
   _id: string;
@@ -66,10 +67,21 @@ function Dashboard() {
     const token = localStorage.getItem('token') || '';
   
     const [searchQuery, setSearchQuery] = React.useState('');
+    const [isAlertOpen, setIsAlertOpen] = React.useState(false);
+    const [alertTitle, setAlertTitle] = React.useState('');
+    const [alertDescription, setAlertDescription] = React.useState('');
+    const [alertType, setAlertType] = React.useState<"success" | "error" | "info">("info");
 
-    console.log(searchQuery);
-    
-
+    const triggerAlert = (
+      title: string,
+      description: string,
+      type: "success" | "error" | "info" = "info"
+    ) => {
+      setAlertTitle(title);
+      setAlertDescription(description);
+      setAlertType(type);
+      setIsAlertOpen(true);
+    };
 
     const fadeInUp = {
       hidden: { opacity: 0, y: 60 },
@@ -94,14 +106,17 @@ function Dashboard() {
 
         const data = await response.json();
         if (data.message) {
-          alert(data.message);
-          window.location.reload();
+          triggerAlert("Deleted", data.message, "success");
+          setTimeout(() => window.location.reload(), 1000);
         } else {
-          alert("Failed to delete content.");
+          triggerAlert("Delete Failed", "Failed to delete content.", "error");
         }
-      } catch (error) {
+
+      }catch (error) {
         console.error("Error deleting content:", error);
+        triggerAlert("Error", "Something went wrong while deleting content.", "error");
       }
+
     }
 
     if(!fetchContent) {  
@@ -121,7 +136,8 @@ function Dashboard() {
     }
 
     return (
-      <div className='bg-white min-h-screen dark:bg-black'>
+      <>
+          <div className='bg-white min-h-screen dark:bg-black'>
         <div className='flex justify-between shadow-md px-4 py-4 dark:border-b sticky top-0 z-50 bg-white dark:bg-black'>
           <div className='flex font-bold text-xl cursor-pointer' onClick={() => navigate('/dashboard')}>
             <Brain className='my-1 text-purple-500 mx-1' /> ThinkNote
@@ -213,6 +229,16 @@ function Dashboard() {
           )}
         </DotBackground>
       </div>
+
+      <AlertPopup
+      title={alertTitle}
+      description={alertDescription}
+      type={alertType}
+      isOpen={isAlertOpen}
+      setIsOpen={setIsAlertOpen}
+    />
+      </>
+
     );
   }
 
