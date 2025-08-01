@@ -40,7 +40,7 @@ export function AlertPopup({
 
   return (
     isOpen && (
-      <div className={`fixed bottom-4 right-4 z-50 w-60 rounded-md border shadow-lg p-1 px-4 ${getColorClasses()}`}>
+      <div className={`fixed bottom-4 md:right-4 right-1 bg-secondary z-50 w-96 rounded-md border shadow-lg py-2 px-4 ${getColorClasses()}`}>
         <Alert  className="shadow-none bg-transparent border-none p-0">
           <AlertTitle>{title}</AlertTitle>
           <AlertDescription>{description}</AlertDescription>
