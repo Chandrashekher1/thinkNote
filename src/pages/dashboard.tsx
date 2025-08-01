@@ -61,7 +61,7 @@ interface Note {
 
 
 function Dashboard() {
-    const {contents,loading} = (useContent() || [] as Note[]);
+    const { contents, loading } = useContent() as { contents: Note[]; loading: boolean };
     const { setTheme } = useTheme();
     const navigate = useNavigate();
     const token = localStorage.getItem('token') || '';
