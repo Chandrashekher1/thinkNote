@@ -136,7 +136,12 @@ function Dashboard() {
     }
 
     return (
-      <>
+      <motion.div
+        variants={fadeInUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        className='bg-white dark:bg-black min-h-screen'>
           <div className='bg-white min-h-screen dark:bg-black'>
         <div className='flex justify-between shadow-md px-4 py-4 dark:border-b sticky top-0 z-50 bg-white dark:bg-black'>
           <div className='flex font-bold text-xl cursor-pointer' onClick={() => navigate('/dashboard')}>
@@ -237,7 +242,7 @@ function Dashboard() {
       setIsOpen={setIsAlertOpen}
       variant={alertVariant}
     />
-      </>
+      </motion.div>
 
     );
   }
