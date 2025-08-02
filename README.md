@@ -61,6 +61,16 @@ npm install
 npm run dev
 
 ```
+## Future Enhancements
+- Edit content inline
+
+- Tag support
+
+- Drag-and-drop content sorting
+
+- User profile & settings page
+
+- Analytics dashboard
 
 # Author
 
