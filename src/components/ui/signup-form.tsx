@@ -49,7 +49,6 @@ export function SignForm({
       });
 
       const data = await response.json();
-      console.log(data);
       
       if (data.success) {
       setAlertTitle("Success");
@@ -129,12 +128,7 @@ export function SignForm({
               className="grid gap-3">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
-                    className="ml-auto text-sm underline-offset-2 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
+                  
                 </div>
                 <Input 
                   id="password"
@@ -166,9 +160,9 @@ export function SignForm({
               </div> */}
               <div className="text-center text-sm">
                 Already have an account ?{" "}
-                <a href="/login" className="underline underline-offset-4">
+                <Button variant="link" onClick={(() => navigate('/login'))} className="inline-flex items-center">
                   Sign In
-                </a>
+                </Button>
               </div>
             </div>
           </form>
