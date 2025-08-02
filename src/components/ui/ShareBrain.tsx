@@ -22,10 +22,10 @@ export function ShareBrainDialog({ token }: ShareBrainDialogProps) {
   const [open, setOpen] = useState(false);
   const [isSharingEnabled, setIsSharingEnabled] = useState(false);
   const [shareLink, setShareLink] = useState("");
-
-
+  const [loading, setLoading] = useState(false);
 
   const handleShareToggle = async () => {
+    setLoading(true);
     try {
       const res = await fetch(`${BACKEND_URL}/api/v1/brain/share`, {
         method: "POST",
@@ -38,9 +38,8 @@ export function ShareBrainDialog({ token }: ShareBrainDialogProps) {
 
       const data = await res.json();
       setIsSharingEnabled(!isSharingEnabled);
-
       if (data.hash) {
-        alert(`Share link: ${window.location.origin}/brain/${data.hash}`);
+        // alert(`Share link: ${window.location.origin}/brain/${data.hash}`);
         setShareLink(`${window.location.origin}/brain/${data.hash}`);
         localStorage.setItem("shareLink", data.hash);
       } else {
@@ -49,6 +48,9 @@ export function ShareBrainDialog({ token }: ShareBrainDialogProps) {
     } catch (err) {
       console.error("Sharing error:", err);
       alert("Error toggling share link");
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -87,7 +89,7 @@ export function ShareBrainDialog({ token }: ShareBrainDialogProps) {
             <h1 className="font-bold my-2 ">Public Share Link</h1>
             <p className="text-muted-foreground my-2">Anyone with this link can view your shared notes</p>
             <p className="my-2">Share this link with others:</p>
-            <a href={shareLink} className="font-mono text-sm border px-4 py-2 rounded-md bg-white dark:bg-black text-blue-500 hover:underline my-8" target="_blank" rel="noopener noreferrer">
+            <a href={shareLink} className="font-mono text-sm border md:px-4 px-2 py-2 rounded-md bg-white dark:bg-black text-blue-500 hover:underline my-8" target="_blank" rel="noopener noreferrer">
               {shareLink}
             </a>
           </div>
@@ -97,8 +99,8 @@ export function ShareBrainDialog({ token }: ShareBrainDialogProps) {
           <Button className="cursor-pointer" variant="ghost" onClick={() => setOpen(false)}>
             Close
           </Button>
-          <Button className="cursor-pointer" onClick={handleShareToggle}>
-            {isSharingEnabled ? "Disable Sharing" : "Generate Share Link"}
+          <Button className="cursor-pointer" disabled={loading}>
+            {loading ? "Generating..." : "Generate Share Link"}
           </Button>
         </DialogFooter>
       </DialogContent>
