@@ -143,9 +143,9 @@ export function LoginForm({
                   </Button>
                   <div className="text-center text-sm">
                     Don&apos;t have an account?{" "}
-                    <a href="/signup" className="underline underline-offset-4">
+                    <Button variant="link" onClick={() => navigate("/signup")} className="inline-flex items-center ">
                       Sign up
-                    </a>
+                    </Button>
                   </div>
                 </div>
               </form>
