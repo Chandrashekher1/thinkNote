@@ -6,10 +6,12 @@ import { Home } from "./pages/Home";
 import LoginPage from "./pages/login";
 import { Footer } from "./components/ui/Footer";
 import UserDashboard from "./pages/userDashboard";
+import { ThemeProvider } from "./components/ui/theme-provider";
 
 function App(){
   return(
-      <BrowserRouter>
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+          <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home/>}/>
           <Route path="/signup" element={<SignUpPage/>}/>
@@ -19,6 +21,9 @@ function App(){
         </Routes> 
         <Footer />
       </BrowserRouter>
+      </ThemeProvider>
+
+      
   )
 }
 
