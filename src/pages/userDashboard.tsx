@@ -32,8 +32,6 @@ export default function UserDashboard() {
         if (!res.ok) throw new Error("Invalid or expired share link");
 
         const json = await res.json();
-        console.log(json);
-        
         setData(json);
       } catch (error) {
         console.error(error||"Failed to fetch data");
