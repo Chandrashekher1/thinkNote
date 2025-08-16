@@ -8,6 +8,7 @@ import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "./Input";
 import { AlertPopup } from "./AlertPopup";
+import { CircularProgress } from "@mui/material";
 
 export function LoginForm({
   className,
@@ -23,7 +24,6 @@ export function LoginForm({
   const passwordRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
 
-  // Alert state
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [alertTitle, setAlertTitle] = useState("");
   const [alertDescription, setAlertDescription] = useState("");
@@ -138,8 +138,8 @@ export function LoginForm({
                       autoComplete="current-password"
                     />
                   </motion.div>
-                  <Button type="submit" variant="default" className="w-full">
-                    {loading ? "Logging in..." : "Login"}
+                  <Button type="submit" variant="default" className="w-full" disabled={loading}>
+                    {loading ? <CircularProgress size={24} color="inherit" /> : "Login"}
                   </Button>
                   <div className="text-center text-sm">
                     Don&apos;t have an account?{" "}
@@ -166,8 +166,6 @@ export function LoginForm({
           </CardContent>
         </Card>
       </div>
-
-      {/* Alert */}
       <AlertPopup
         title={alertTitle}
         description={alertDescription}
