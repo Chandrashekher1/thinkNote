@@ -1,13 +1,14 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/Button"
-import { Card, CardContent } from "@/components/ui/Card"
-import { Label } from "../ui/label"
-import { easeOut, motion } from "motion/react"
-import { useNavigate } from "react-router-dom"
-import { useRef, useState } from "react"
-import { BACKEND_URL } from "@/config"
-import { Input } from "./Input"
-import { AlertPopup } from "./AlertPopup"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent } from "@/components/ui/Card";
+import { Label } from "../ui/label";
+import { easeOut, motion } from "motion/react";
+import { useNavigate } from "react-router-dom";
+import { useRef, useState } from "react";
+import { BACKEND_URL } from "@/config";
+import { Input } from "./Input";
+import { AlertPopup } from "./AlertPopup";
+import { CircularProgress } from "@mui/material";
 
 export function SignForm({
   className,
@@ -15,18 +16,18 @@ export function SignForm({
 }: React.ComponentProps<"div">) {
 
   const fadeInUp = {
-      hidden: {opacity:0, x:60},
+      hidden: {opacity:0, x:-60},
       visible: {opacity:1, x:0, transition:{duration: 0.6,ease: easeOut}}
   }
 
   const navigate = useNavigate();
   const userRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
+  const [loading, setLoading] = useState(false);
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertTitle, setAlertTitle] = useState("");
   const [alertDescription, setAlertDescription] = useState("");
   const [alertVariant, setAlertVariant] = useState<"default" | "success" | "error">("default");
-
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,6 +40,7 @@ export function SignForm({
       return;
     }
 
+    setLoading(true);
     try {
       const response = await fetch(`${BACKEND_URL}/api/v1/signup`, {
         method: "POST",
@@ -70,6 +72,8 @@ export function SignForm({
       setAlertDescription(error instanceof Error ? error.message : "An unexpected error occurred.");
       setAlertVariant("error");
       setAlertOpen(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -138,8 +142,8 @@ export function SignForm({
                   required 
                 />
               </motion.div>
-              <Button type="submit" className="w-full">
-                Sign Up
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? <CircularProgress size={24} color="inherit" /> : "Sign Up"}
               </Button>
               {/* <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
                 <span className="bg-card text-muted-foreground relative z-10 px-2">
