@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/Button";
-import { ArrowUpRight, PlayCircleIcon } from "lucide-react";
+import { PlayCircleIcon } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -11,6 +11,8 @@ import { Moon, Sun } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { easeOut, motion } from "framer-motion";
 import Squares from "@/lightwind/Components/Squares";
+import { TypingAnimation } from "@/components/magicui/typing-animation";
+import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-button";
 
 export function Home() {
     const { setTheme, theme } = useTheme();
@@ -49,25 +51,22 @@ export function Home() {
                 className="z-10 text-center"
             >
                 <div className="md:w-[50vw] text-center font-bold">
-                        <h1 className="md:text-6xl text-4xl mx-4 md:mx-0 ">
-                            Your Digital Brain for Everything Online
-                        </h1>
-                    <p className="md:text-2xl text-xl mx-4 font-semibold text-center my-8 dark:text-gray-300 text-black">
+                   <TypingAnimation className="md:text-6xl text-4xl mx-4 md:mx-0 ">
+                        Your Digital Brain for Everything Online
+                        
+                   </TypingAnimation>
+                   <p className="md:text-2xl text-xl mx-4 font-semibold text-center my-8 dark:text-gray-300 text-black">
                         Effortlessly save, manage, and share your notes, videos, tweets,
                         and links—all in one sleek, unified space.
                     </p>
                     <div className="flex justify-center">
-                        <Button
-                            variant="default"
-                            className="text-lg mx-4 px-4"
-                            onClick={handleStarted}
-                        >
-                            Get Started <ArrowUpRight />
-                        </Button>
+                        <InteractiveHoverButton onClick={handleStarted}>
+                            Get Started
+                        </InteractiveHoverButton>
                         <Button
                             variant="outline"
                             size="lg"
-                            className="text-lg"
+                            className="text-lg mx-4"
                             onClick={() => navigate("/login")}
                         >
                             <PlayCircleIcon /> Login
