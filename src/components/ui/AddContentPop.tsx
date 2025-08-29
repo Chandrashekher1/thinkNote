@@ -8,10 +8,10 @@ import { AlertPopup } from './AlertPopup';
 
 interface Props {
   token: string;
-  // refetch: () => void;
 }
 
 export const AddContentPopover: React.FC<Props> = ({ token }) => {
+  const [open, setOpen] = useState(false)
   const [selectedType, setSelectedType] = useState<string | null>('document');
   const [content, setContent] = useState<string>('');
   const [loading, setLoading] = useState(false);
@@ -22,7 +22,6 @@ export const AddContentPopover: React.FC<Props> = ({ token }) => {
 
   const titleRef = useRef<HTMLInputElement>(null);
   const linkRef = useRef<HTMLInputElement>(null);
-  const tagsRef = useRef<HTMLInputElement>(null);
 
   const triggerAlert = (
     title: string,
@@ -38,7 +37,6 @@ export const AddContentPopover: React.FC<Props> = ({ token }) => {
   const handleAddContent = async () => {
     const title = titleRef.current?.value;
     const link = linkRef.current?.value;
-    // const tags = tagsRef.current?.value?.split(',').map(tag => tag.trim()) || [];
 
     if (!title || (selectedType === 'document' && !content) || (selectedType !== 'document' && !link)) {
       triggerAlert('Missing Fields', 'Please fill in all required fields.', 'error');
@@ -70,12 +68,11 @@ export const AddContentPopover: React.FC<Props> = ({ token }) => {
 
       const data = await response.json();
       if (data.message) {
-        // refetch();
         triggerAlert('Success', "Content added successfully!", "success");
         setContent('');
         if (titleRef.current) titleRef.current.value = '';
         if (linkRef.current) linkRef.current.value = '';
-        if (tagsRef.current) tagsRef.current.value = '';
+        setOpen(false)
       } else {
         triggerAlert('Error', data.error || "Something went wrong.", "error");
       }
@@ -89,7 +86,7 @@ export const AddContentPopover: React.FC<Props> = ({ token }) => {
 
   return (
     <>
-      <Popover>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button variant="secondary" className='ml-2'>
             <PlusIcon/> 
@@ -126,12 +123,12 @@ export const AddContentPopover: React.FC<Props> = ({ token }) => {
             </div>
 
             <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-card-foreground">
-                    Title <span className="text-red-500">*</span>
-                  </label>
-                  <Input ref={titleRef} placeholder="Enter a descriptive title" className="mt-1" />
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-card-foreground">
+                  Title <span className="text-red-500">*</span>
+                </label>
+                <Input ref={titleRef} placeholder="Enter a descriptive title" className="mt-1" />
+              </div>
 
               {selectedType !== 'document' && (
                 <div>
@@ -155,15 +152,12 @@ export const AddContentPopover: React.FC<Props> = ({ token }) => {
                   />
                 </div>
               )}
-
-              {/* <div>
-                <label className="block text-sm font-medium text-card-foreground">Tags</label>
-                <Input ref={tagsRef} placeholder="Add tags, separated by commas" className="mt-1" />
-              </div> */}
             </div>
 
             <div className="flex justify-end gap-4 pt-4">
-              <Button variant="outline">Close</Button>
+              <Button variant="outline" onClick={() => setOpen(false)}> {/* 🔹 Close button works */}
+                Close
+              </Button>
               <Button variant={loading ? "outline" : "default"} onClick={handleAddContent} disabled={loading}>
                 {loading ? 'Adding...' : 'Add Content'}
               </Button>
