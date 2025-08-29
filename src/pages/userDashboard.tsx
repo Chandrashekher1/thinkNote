@@ -2,7 +2,6 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
 import { DockIcon } from "lucide-react";
-import { YoutubeIcons } from "@/icons/YoutubeIcons";
 import { GridBackground } from "@/lightwind/Components/dotAndGrid";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BACKEND_URL } from "@/config";
@@ -59,16 +58,16 @@ export default function UserDashboard() {
             data?.content?.map((item, idx) => (
               <Card
                 key={idx}
-                className="bg-secondary text-secondary-foreground border-accent md:w-[30vw] w-full mx-2 my-2 hover:-translate-y-2 transition-transform duration-300 z-0"
+                className="bg-background text-secondary-foreground border-accent md:w-[30vw] w-full mx-2 my-2 hover:-translate-y-2 transition-transform duration-300 z-0"
               >
                 <CardHeader>
-                  <CardTitle className="flex gap-2">
-                    {item.type === 'document' ? <DockIcon /> : <YoutubeIcons />} {item.title}
-                  </CardTitle>
+                  {item.type === 'document' && <CardTitle className="flex gap-2">
+                    {item.type === 'document' ? <DockIcon /> : ""} {item.title}
+                  </CardTitle>}
 
-                  <CardDescription className="border border-accent">
+                  {item.type === 'document' && <CardDescription className="border border-accent overflow-y-auto h-40 text-primary p-2">
                     {item.content}
-                  </CardDescription>
+                  </CardDescription>}
 
                   {item.type === 'twitter' && (
                     <CardDescription>
