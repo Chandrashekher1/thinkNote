@@ -18,8 +18,6 @@ import * as React from 'react';
   import {
     Brain,
     DockIcon,
-    EditIcon,
-    EyeIcon,
     LinkIcon,
     Moon,
     PlusIcon,
