@@ -1,8 +1,7 @@
-  import * as React from 'react';
+import * as React from 'react';
   import '../App.css';
   import { Button } from '../components/ui/Button';
   import {
-    Card,
     CardContent,
     CardFooter,
     CardHeader,
@@ -25,7 +24,6 @@
     Moon,
     PlusIcon,
     Sun,
-    TagIcon,
     Trash
   } from "lucide-react";
   import { YoutubeIcons } from '@/icons/YoutubeIcons';
@@ -50,6 +48,7 @@ import { ShareBrainDialog } from '@/components/ui/ShareBrain';
 import { Skeleton } from "@/components/ui/skeleton"
 import { Input } from '@/components/ui/Input';
 import { AlertPopup } from '@/components/ui/AlertPopup';
+import { MagicCard } from '@/components/magicui/magic-card';
 
 interface Note {
   _id: string;
@@ -58,8 +57,6 @@ interface Note {
   link?: any;
   type?: string;
 }
-
-
 function Dashboard() {
     const { contents, loading } = useContent() as { contents: Note[]; loading: boolean };
     const { setTheme } = useTheme();
@@ -67,9 +64,9 @@ function Dashboard() {
     const token = localStorage.getItem('token') || '';
     const [searchQuery, setSearchQuery] = React.useState('');
     const [isAlertOpen, setIsAlertOpen] = React.useState(false);
-      const [alertTitle, setAlertTitle] = React.useState('');
-      const [alertDescription, setAlertDescription] = React.useState('');
-      const [alertVariant, setAlertVariant] = React.useState<"default" | "success" | "error">("default");
+    const [alertTitle, setAlertTitle] = React.useState('');
+    const [alertDescription, setAlertDescription] = React.useState('');
+    const [alertVariant, setAlertVariant] = React.useState<"default" | "success" | "error">("default");
 
     const triggerAlert = (
     title: string,
@@ -118,7 +115,6 @@ function Dashboard() {
       }
 
     }
-
     if(loading) {  
       return(
         <div className='flex flex-wrap items-center justify-center min-h-screen bg-white dark:bg-black px-4 py-8'>
@@ -142,10 +138,15 @@ function Dashboard() {
         whileInView="visible"
         viewport={{ once: true }}
         className='bg-white dark:bg-black min-h-screen'>
-          <div className='bg-white min-h-screen dark:bg-black'>
+        <div className='bg-white min-h-screen dark:bg-black'>
         <div className='flex justify-between shadow-md px-4 py-4 dark:border-b sticky top-0 z-50 bg-white dark:bg-black'>
           <div className='flex font-bold text-xl cursor-pointer' onClick={() => navigate('/dashboard')}>
             <Brain className='my-1 text-purple-500 mx-1' /> ThinkNote
+          </div>
+          <div className='flex'>
+            <Input type='text' className='py-2 border dark:border-primary-foreground text-default bg-white shadow-lg md:text-sm px-2 dark:bg-input text-secondary-foreground mx-2' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder='Search notes, links, tweets...' />
+            <ShareBrainDialog token={token}/>
+            <AddContentPopover token={token} />
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -158,28 +159,20 @@ function Dashboard() {
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => setTheme("light")}>Light</DropdownMenuItem>
               <DropdownMenuItem onClick={() => setTheme("dark")}>Dark</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme("system")}>System</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-
-        <div className='flex flex-col md:flex-row justify-between my-6 mx-4'>
-          <Input type='text' className='md:w-[40vw] py-2 border dark:border-primary-foreground text-default bg-white shadow-lg md:text-lg px-2 dark:bg-primary-foreground' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder='Search notes, links, tweets...' />
-          <div className='mt-4 md:mt-0 space-y-2'>
-            <Button variant="default" className='mx-2'><TagIcon/> Filter by Tags</Button>
-            <ShareBrainDialog token={token}/>
-            <AddContentPopover token={token} />
-          </div>
-        </div>
-
-        <DotBackground>
+        <DotBackground className='min-h-screen'>
           {contents.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-[60vh] text-center my-8 bg-muted rounded-lg p-6">
-              <PlusIcon className="w-8 h-8 mb-4" />
-              <h2 className="text-xl font-semibold">No content found</h2>
-              <p className="text-muted-foreground mb-4">Add your first note, link, or content</p>
-              <div className='text-start bg-secondary border rounded-lg'><AddContentPopover token={token} /></div>
-            </div>
+            <MagicCard >
+              <div className="flex flex-col items-center justify-center h-[60vh] text-center my-8  rounded-lg p-6">
+                <PlusIcon className="w-8 h-8 mb-4" />
+                <h2 className="text-xl font-semibold">No content found</h2>
+                <p className="text-muted-foreground mb-4">Add your first note, link, or content</p>
+                <div className='text-start bg-secondary border rounded-lg'><AddContentPopover token={token}  /></div>
+              </div>
+              
+            </MagicCard>
           ) :  (
             <motion.div variants={fadeInUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className='mx-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 my-8'>
               {contents.filter(({title, type,content}) => {
@@ -190,45 +183,47 @@ function Dashboard() {
                   (type?.toLowerCase().includes(query) ?? false)
                 );
               }).map(({ link, title, type, content , _id}, index) => (
-                <Card key={index} className="md:w-[30vw] w-[80vw] bg-white dark:bg-primary-foreground border border-border rounded-2xl shadow-md transition-colors hover:-translate-y-1 hover:duration-300">
-                  <CardHeader className="flex items-start justify-between gap-2">
-                    <div className="flex items-center gap-2 text-xl font-semibold text-foreground">
-                      {type === 'youtube' && <YoutubeIcons />} {type === 'twitter' && <TwitterIcon />} {type === 'document' && <DockIcon />} {type === 'link' && <LinkIcon />} {title}
+                    <div key={index} className="md:w-[30vw] w-[80v] rounded-2xl shadow-md transition-colors hover:-translate-y-1 duration-300">
+                      <MagicCard className='h-auto py-4'>
+                        <CardHeader className="flex items-start justify-between gap-2">
+                        <div className="flex items-center gap-2 text-xl font-semibold text-foreground">
+                          {type === 'youtube' && <YoutubeIcons/>} {type === 'twitter' && <TwitterIcon />} {type === 'document' && <DockIcon />} {type === 'link' && <LinkIcon />} {title}
+                        </div>
+                        <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive hover:text-white" >
+                          <AlertDialog>
+                          <AlertDialogTrigger><Trash className="w-4 h-4" /></AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Delete Content</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Confirm to delete this Content?
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction className='bg-destructive hover:bg-red-500 ' onClick={() =>handleDeleteContent(_id)}>Continue</AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                        </Button>
+                        </CardHeader>
+                        <CardContent className="space-y-2 text-sm text-muted-foreground my-4">
+                          {link && <a href={link} target="_blank" rel="noopener noreferrer" className="text-blue-500 break-all hover:underline">{link}</a>}
+                          {content && <p className="text-secondary-foreground font-sans bg-background border rounded-lg p-2 h-40 overflow-y-auto">{content}</p>}
+                          {/* {tags?.length > 0 && <div className="flex flex-wrap gap-2">{tags.map((tag: string, i: number) => (<span key={i} className="bg-muted px-2 py-1 text-xs rounded-md">{tag}</span>))}</div>} */}
+                          {type === "youtube" && <iframe className="w-full h-40 rounded-md" src={link.replace("watch", "embed").replace("?v=", "/")} title="Embedded video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>}
+                          {type === "twitter" && <blockquote className="twitter-tweet bg-background text-background overflow-y-auto"><a href={link} ></a></blockquote>}
+                          {type === "link" && <a href={link} className='h-40'></a> }
+                        </CardContent>
+                        <CardFooter className="flex justify-between">
+                          {/* <Button variant="secondary" size="sm"><EyeIcon className="w-4 h-4 mr-1" /> Preview</Button> */}
+                          <div className="flex gap-2">
+                            {/* <Button variant="ghost" size="icon"><EditIcon className="w-4 h-4" /></Button> */}
+                          </div>
+                        </CardFooter>
+                      </MagicCard>
                     </div>
-                    <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive hover:text-white" >
-                      <AlertDialog>
-                      <AlertDialogTrigger><Trash className="w-4 h-4" /></AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Delete Content</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Confirm to delete this Content?
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction className='bg-destructive hover:bg-red-500 ' onClick={() =>handleDeleteContent(_id)}>Continue</AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                    </Button>
-                  </CardHeader>
-                  <CardContent className="space-y-2 text-sm text-muted-foreground">
-                    {link && <a href={link} target="_blank" rel="noopener noreferrer" className="text-blue-500 break-all hover:underline">{link}</a>}
-                    {content && <p className="text-primary font-semibold border rounded-lg p-2">{content}</p>}
-
-                    {/* {tags?.length > 0 && <div className="flex flex-wrap gap-2">{tags.map((tag: string, i: number) => (<span key={i} className="bg-muted px-2 py-1 text-xs rounded-md">{tag}</span>))}</div>} */}
-                    {type === "youtube" && <iframe className="w-full h-40 rounded-md" src={link.replace("watch", "embed").replace("?v=", "/")} title="Embedded video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>}
-                    {type === "twitter" && <blockquote className="twitter-tweet"><a href={link} ></a></blockquote>}
-                    {type === "link" && <a href={link}></a> }
-                  </CardContent>
-                  <CardFooter className="flex justify-between">
-                    <Button variant="secondary" size="sm"><EyeIcon className="w-4 h-4 mr-1" /> Preview</Button>
-                    <div className="flex gap-2">
-                      <Button variant="ghost" size="icon"><EditIcon className="w-4 h-4" /></Button>
-                    </div>
-                  </CardFooter>
-                </Card>
+                  
               ))}
             </motion.div>
           )}
