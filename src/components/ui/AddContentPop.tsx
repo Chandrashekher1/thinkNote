@@ -1,28 +1,24 @@
 import React, { useRef, useState } from 'react';
 import { Button } from './Button';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
-import { DockIcon, Link, PlusIcon } from 'lucide-react';
-import { YoutubeIcons } from '@/icons/YoutubeIcons';
-import { TwitterIcon } from '@/icons/TwitterIcon';
+import { DockIcon, Link, PlusIcon, TwitterIcon, YoutubeIcon } from 'lucide-react';
 import { BACKEND_URL } from '@/config';
 import { Input } from './Input';
 import { AlertPopup } from './AlertPopup';
-import { useContent } from '@/Hook/useContent';
 
 interface Props {
   token: string;
+  // refetch: () => void;
 }
 
 export const AddContentPopover: React.FC<Props> = ({ token }) => {
   const [selectedType, setSelectedType] = useState<string | null>('document');
-  const [isDocumentOpen, setDocumentOpen] = useState(false);
   const [content, setContent] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [alertTitle, setAlertTitle] = useState('');
   const [alertDescription, setAlertDescription] = useState('');
   const [alertVariant, setAlertVariant] = useState<"default" | "success" | "error">("default");
-  const {fetchContent} = useContent();
 
   const titleRef = useRef<HTMLInputElement>(null);
   const linkRef = useRef<HTMLInputElement>(null);
@@ -42,9 +38,9 @@ export const AddContentPopover: React.FC<Props> = ({ token }) => {
   const handleAddContent = async () => {
     const title = titleRef.current?.value;
     const link = linkRef.current?.value;
-    const tags = tagsRef.current?.value?.split(',').map(tag => tag.trim()) || [];
+    // const tags = tagsRef.current?.value?.split(',').map(tag => tag.trim()) || [];
 
-    if (!title || (selectedType === 'document' && !content)) {
+    if (!title || (selectedType === 'document' && !content) || (selectedType !== 'document' && !link)) {
       triggerAlert('Missing Fields', 'Please fill in all required fields.', 'error');
       return;
     }
@@ -53,13 +49,13 @@ export const AddContentPopover: React.FC<Props> = ({ token }) => {
 
     const payload: any = {
       title,
-      link,
-      type: selectedType || 'document',
-      tags,
+      type: selectedType || 'document'
     };
 
     if (selectedType === 'document') {
       payload.content = content;
+    } else {
+      payload.link = link;
     }
 
     try {
@@ -74,21 +70,20 @@ export const AddContentPopover: React.FC<Props> = ({ token }) => {
 
       const data = await response.json();
       if (data.message) {
-        fetchContent()
+        // refetch();
         triggerAlert('Success', "Content added successfully!", "success");
-        window.location.href = '/dashboard';
+        setContent('');
+        if (titleRef.current) titleRef.current.value = '';
+        if (linkRef.current) linkRef.current.value = '';
+        if (tagsRef.current) tagsRef.current.value = '';
+      } else {
+        triggerAlert('Error', data.error || "Something went wrong.", "error");
       }
     } catch (e: any) {
       triggerAlert('Error', e.message || "Something went wrong.", "error");
       console.error("Error adding content:", e.message);
     } finally {
       setLoading(false);
-      setSelectedType(null);
-      setDocumentOpen(false);
-      setContent('');
-      if (titleRef.current) titleRef.current.value = '';
-      if (linkRef.current) linkRef.current.value = '';
-      if (tagsRef.current) tagsRef.current.value = '';
     }
   };
 
@@ -96,79 +91,80 @@ export const AddContentPopover: React.FC<Props> = ({ token }) => {
     <>
       <Popover>
         <PopoverTrigger asChild>
-          <Button variant="secondary" className="mx-2">
-            <PlusIcon className="mr-2" /> Add Content
+          <Button variant="secondary" className='ml-2'>
+            <PlusIcon/> 
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[95vw] max-w-2xl">
-          <div className="space-y-4">
-            <h2 className="text-2xl font-bold">Add New Content</h2>
-            <p className="text-muted-foreground text-sm">
-              Add a new note, link, tweet, or YouTube video to your collection.
-            </p>
+        <PopoverContent className="w-[95vw] max-w-2xl bg-card shadow-lg rounded-lg">
+          <div className="p-6 space-y-6">
+            <div className="text-center">
+              <h2 className="text-3xl font-bold text-card-foreground">Add New Content</h2>
+              <p className="text-muted-foreground mt-1">
+                Select the type of content you want to add.
+              </p>
+            </div>
 
-            <div className="flex flex-wrap justify-center">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {[
                 { label: 'Document', type: 'document', icon: <DockIcon /> },
-                { label: 'YouTube', type: 'youtube', icon: <YoutubeIcons /> },
+                { label: 'YouTube', type: 'youtube', icon: <YoutubeIcon /> },
                 { label: 'Tweet', type: 'twitter', icon: <TwitterIcon /> },
                 { label: 'Link', type: 'link', icon: <Link /> },
               ].map(({ label, type, icon }) => (
                 <Button
                   key={type}
                   variant={selectedType === type ? 'default' : 'outline'}
-                  size="lg"
-                  className={`mx-2 my-2 w-60 h-12 font-semibold text-lg ${
-                    selectedType === type ? 'ring-2 ring-primary shadow-md' : ''
+                  className={`w-full h-20 flex flex-col items-center justify-center gap-2 transition-all duration-200 ${
+                    selectedType === type ? 'ring-2 ring-primary shadow-lg' : 'hover:bg-muted'
                   }`}
-                  onClick={() => {
-                    setSelectedType(type);
-                    setDocumentOpen(type !== 'document');
-                  }}
+                  onClick={() => setSelectedType(type)}
                 >
-                  {icon} {label}
+                  {icon}
+                  <span className="font-semibold">{label}</span>
                 </Button>
               ))}
             </div>
 
-            {isDocumentOpen && (
-              <div>
-                <label className="block text-sm font-medium">
-                  URL <span className="text-red-500">*</span>
-                </label>
-                <Input ref={linkRef} placeholder="Enter the URL" />
-              </div>
-            )}
+            <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-card-foreground">
+                    Title <span className="text-red-500">*</span>
+                  </label>
+                  <Input ref={titleRef} placeholder="Enter a descriptive title" className="mt-1" />
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium">
-                Title <span className="text-red-500">*</span>
-              </label>
-              <Input ref={titleRef} placeholder="Enter a descriptive title" />
+              {selectedType !== 'document' && (
+                <div>
+                  <label className="block text-sm font-medium text-card-foreground">
+                    URL <span className="text-red-500">*</span>
+                  </label>
+                  <Input ref={linkRef} placeholder="Enter the URL" className="mt-1" />
+                </div>
+              )}
+
+              {selectedType === 'document' && (
+                <div>
+                  <label className="block text-sm font-medium text-card-foreground">
+                    Content <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    className="w-full h-32 mt-1 border border-border bg-background text-foreground p-2 rounded-md focus:ring-2 focus:ring-primary"
+                    placeholder="Write your content in Markdown format..."
+                  />
+                </div>
+              )}
+
+              {/* <div>
+                <label className="block text-sm font-medium text-card-foreground">Tags</label>
+                <Input ref={tagsRef} placeholder="Add tags, separated by commas" className="mt-1" />
+              </div> */}
             </div>
 
-            {selectedType === 'document' && (
-              <div>
-                <label className="block text-sm font-medium">
-                  Content <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  className="w-full h-32 border border-border bg-background text-foreground p-2 rounded-md"
-                  placeholder="Write your content in Markdown format..."
-                />
-              </div>
-            )}
-
-            <div>
-              <label className="block text-sm font-medium">Tags</label>
-              <Input ref={tagsRef} placeholder="Add tags, separated by commas" />
-            </div>
-
-            <div className="flex justify-end gap-2 pt-4">
-              <Button variant="ghost">Cancel</Button>
-              <Button variant={loading ? "outline" : "default"} onClick={handleAddContent}>
+            <div className="flex justify-end gap-4 pt-4">
+              <Button variant="outline">Close</Button>
+              <Button variant={loading ? "outline" : "default"} onClick={handleAddContent} disabled={loading}>
                 {loading ? 'Adding...' : 'Add Content'}
               </Button>
             </div>
