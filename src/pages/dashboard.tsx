@@ -142,7 +142,7 @@ function Dashboard() {
             <Brain className='my-1 text-purple-500 mx-1' /> ThinkNote
           </div>
           <div className='flex'>
-            <Input type='text' className='py-2 border dark:border-primary-foreground text-default bg-white shadow-lg md:text-sm px-2 dark:bg-input text-secondary-foreground mx-2' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder='Search notes, links, tweets...' />
+            <Input type='text' className='py-2 border dark:border-primary-foreground text-default bg-white shadow-lg md:text-sm px-2 dark:bg-input text-secondary-foreground mx-2 hidden md:inline' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder='Search notes, links, tweets...' />
             <ShareBrainDialog token={token}/>
             <AddContentPopover token={token} />
           </div>
