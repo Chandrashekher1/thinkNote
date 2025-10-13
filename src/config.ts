@@ -1,2 +1,2 @@
-export const BACKEND_URL="https://thinknote-backend.onrender.com"
+export const BACKEND_URL="https://thinknote.onrender.com/"
 
