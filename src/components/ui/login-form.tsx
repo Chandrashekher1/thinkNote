@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { Input } from "./Input";
 import { AlertPopup } from "./AlertPopup";
 import { CircularProgress } from "@mui/material";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 export function LoginForm({
   className,
@@ -28,6 +29,17 @@ export function LoginForm({
   const [alertTitle, setAlertTitle] = useState("");
   const [alertDescription, setAlertDescription] = useState("");
   const [alertVariant, setAlertVariant] = useState<"default" | "success" | "error">("default");
+  const [showPassword,setShowPassword] = useState(false)
+
+  const loginWithGoogle = () => {
+    const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+    const REDIRECT_URI = "http://localhost:3000/auth/google/callback";
+    const SCOPE = "openid profile email";
+    const RESPONSE_TYPE = "code";
+
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?response_type=${RESPONSE_TYPE}&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=${SCOPE}`;
+    window.location.href = url;
+  };
 
   const triggerAlert = (
     title: string,
@@ -53,7 +65,7 @@ export function LoginForm({
 
     setLoading(true);
     try {
-      const response = await fetch(`${BACKEND_URL}/api/v1/signin`, {
+      const response = await fetch(`${BACKEND_URL}/login/api/v1/signin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -62,6 +74,9 @@ export function LoginForm({
       });
 
       const data = await response.json();
+
+      console.log(data);
+      
 
       if (data.success || data.token) {
         localStorage.setItem("token", data.token);
@@ -129,25 +144,32 @@ export function LoginForm({
                         Forgot your password?
                       </a>
                     </div>
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="password"
-                      ref={passwordRef}
-                      required
-                      autoComplete="current-password"
+                    <div className="relative">
+                      <Input
+                        id="password"
+                        type={showPassword ? "text": "password"}
+                        placeholder="password"
+                        ref={passwordRef}
+                        required
+                        autoComplete="current-password"
+                        className="pr-10"
                     />
+                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary-foreground cursor-pointer">{showPassword ? <EyeOffIcon/> : <EyeIcon/>} </button>
+                    </div>
                   </motion.div>
                   <Button type="submit" variant="default" className="w-full" disabled={loading}>
                     {loading ? <CircularProgress size={24} color="inherit" /> : "Login"}
                   </Button>
                   <div className="text-center text-sm">
-                    Don&apos;t have an account?{" "}
-                    <Button variant="link" onClick={() => navigate("/signup")} className="inline-flex items-center ">
+                    Don't have an account?{" "}
+                    <Button type="button" variant="link" onClick={() => navigate("/signup")} className="inline-flex items-center ">
                       Sign up
                     </Button>
                   </div>
                 </div>
+                <Button variant="default" className="w-full" onClick={loginWithGoogle} type="button">
+                  Login With Google
+                </Button>
               </form>
             </motion.div>
             <motion.div

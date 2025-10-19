@@ -9,6 +9,7 @@ import { BACKEND_URL } from "@/config";
 import { Input } from "./Input";
 import { AlertPopup } from "./AlertPopup";
 import { CircularProgress } from "@mui/material";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 export function SignForm({
   className,
@@ -28,6 +29,7 @@ export function SignForm({
   const [alertTitle, setAlertTitle] = useState("");
   const [alertDescription, setAlertDescription] = useState("");
   const [alertVariant, setAlertVariant] = useState<"default" | "success" | "error">("default");
+  const [showPassword, setShowPassword] = useState(false)
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,7 +44,7 @@ export function SignForm({
 
     setLoading(true);
     try {
-      const response = await fetch(`${BACKEND_URL}/api/v1/signup`, {
+      const response = await fetch(`${BACKEND_URL}/content/api/v1/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -54,7 +56,7 @@ export function SignForm({
       
       if (data.success) {
       setAlertTitle("Success");
-      setAlertDescription("Signup successful! Redirecting to login...");
+      setAlertDescription("Signup successful");
       setAlertVariant("success");
       setAlertOpen(true);
 
@@ -76,6 +78,7 @@ export function SignForm({
       setLoading(false);
     }
   };
+
 
   return (
     <>
@@ -134,13 +137,18 @@ export function SignForm({
                   <Label htmlFor="password">Password</Label>
                   
                 </div>
-                <Input 
-                  id="password"
-                  type="password" 
-                  placeholder="user@123" 
-                  ref={passwordRef}
-                  required 
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text": "password"}
+                    placeholder="password"
+                    ref={passwordRef}
+                    required
+                    autoComplete="current-password"
+                      className="pr-10"
+                  />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary-foreground cursor-pointer">{showPassword ? <EyeOffIcon/> : <EyeIcon/>} </button>
+                </div>
               </motion.div>
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? <CircularProgress size={24} color="inherit" /> : "Sign Up"}
@@ -164,7 +172,7 @@ export function SignForm({
               </div> */}
               <div className="text-center text-sm">
                 Already have an account ?{" "}
-                <Button variant="link" onClick={(() => navigate('/login'))} className="inline-flex items-center">
+                <Button type="button" variant="link" onClick={(() => navigate('/login'))} className="inline-flex items-center">
                   Sign In
                 </Button>
               </div>
