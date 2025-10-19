@@ -57,7 +57,7 @@ export const AddContentPopover: React.FC<Props> = ({ token }) => {
     }
 
     try {
-      const response = await fetch(`${BACKEND_URL}/api/v1/content`, {
+      const response = await fetch(`${BACKEND_URL}/content/api/v1/content`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
