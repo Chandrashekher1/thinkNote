@@ -1,26 +1,36 @@
+import { useEffect, useState, useCallback } from "react";
 import { BACKEND_URL } from "@/config";
-import { useEffect, useState } from "react";
 
 export function useContent() {
   const [contents, setContents] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const fetchContent = async () => {
+  const token = localStorage.getItem("token") || "";
+
+  const fetchContents = useCallback(async () => {
     setLoading(true);
-    const response = await fetch(`${BACKEND_URL}/api/v1/content`, {
-      method: "GET",
-      headers: {
-        Authorization: `${localStorage.getItem("token")}`,
-      },
-    });
-    const json = await response.json();
-    setContents(json?.content || []);
-    setLoading(false);
-  };
+    try {
+      const res = await fetch(`${BACKEND_URL}/content/api/v1/content`, {
+        headers: { Authorization: `${token}` },
+      });
+      const data = await res.json();
+      if (data) {
+        setContents(data);
+      }
+    } catch (error) {
+      console.error("Error fetching content:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
+  
+
+  console.log(contents);
+  
 
   useEffect(() => {
-    fetchContent();
-  }, []);
+    fetchContents();
+  }, [fetchContents]);
 
-  return { contents, loading, fetchContent };
+  return { contents, loading, refetch: fetchContents };
 }
